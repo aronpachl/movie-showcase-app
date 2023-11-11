@@ -1,11 +1,69 @@
 import { SafeAreaView } from 'moti'
-import { Button, Text, View } from 'react-native'
+import { Pressable, Text, View, useWindowDimensions } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { GENRES } from '../constants/genres'
 import { filterLayout$ } from '../state/filter-layout'
-import { moviesParams$ } from '../state/movies'
 
 const _spacing = 12
+
+type Option = {
+  id: number
+  value: string
+}
+
+function FilterItems({
+  title,
+  options,
+  onPress,
+}: {
+  title: string
+  options: Option[]
+  onPress: (value: string) => void
+}) {
+  const { width } = useWindowDimensions()
+  return (
+    <View style={{ alignItems: 'center' }}>
+      <Text
+        style={{
+          fontSize: 12,
+          fontWeight: '700',
+          color: 'rgba(0, 0, 0, 0.5)',
+          width,
+          textAlign: 'center',
+        }}
+      >
+        {title.toUpperCase()}
+      </Text>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+      >
+        {options.map((o) => {
+          return (
+            <Pressable
+              key={`option-${o.id}`}
+              onPress={() => onPress(String(o.id))}
+            >
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: '700',
+                  color: '#000',
+                  marginVertical: 12,
+                  width: width,
+                  textAlign: 'center',
+                }}
+              >
+                {o.value}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </ScrollView>
+    </View>
+  )
+}
 
 function MovieFilters() {
   return (
@@ -23,40 +81,22 @@ function MovieFilters() {
           })
         }}
       >
-        <Text>Year</Text>
-        <ScrollView horizontal>
-          {[...Array(10).keys()].map((y) => {
-            const year = 2023 - y
-            return (
-              <Button
-                key={`year-${year}`}
-                onPress={() => {
-                  moviesParams$.assign({
-                    year,
-                  })
-                }}
-                title={String(year)}
-              />
-            )
-          })}
-        </ScrollView>
-        <Text>Genre</Text>
-        <ScrollView horizontal>
-          {Object.entries(GENRES).map(([id, genre]) => {
-            return (
-              <Button
-                key={`genre-${id}`}
-                onPress={() => {
-                  console.log('press', genre, id)
-                  moviesParams$.assign({
-                    genre: String(id),
-                  })
-                }}
-                title={genre}
-              />
-            )
-          })}
-        </ScrollView>
+        <FilterItems
+          title="Year"
+          options={[...Array(10).keys()].map((i) => ({
+            id: 2023 - i,
+            value: String(2023 - i),
+          }))}
+          onPress={() => {}}
+        />
+        <FilterItems
+          title="Genre"
+          options={Object.entries(GENRES).map(([id, genre]) => ({
+            id: Number(id),
+            value: genre,
+          }))}
+          onPress={() => {}}
+        />
       </View>
     </SafeAreaView>
   )
