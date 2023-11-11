@@ -16,6 +16,7 @@ Developed using React Native Expo, Reanimated, and Moti, with Legend State emplo
     <img src="./v0_0_1.gif" />
 </p>
 </br>
+
 (Crafted under the guidance of [Catalin Miron](https://twitter.com/mironcatalin))
 
 ## Goals/ TODO
