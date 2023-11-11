@@ -1,8 +1,9 @@
 import { SafeAreaView } from 'moti'
-import { Pressable, Text, View, useWindowDimensions } from 'react-native'
+import { Text, View, useWindowDimensions } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { GENRES } from '../constants/genres'
 import { filterLayout$ } from '../state/filter-layout'
+import { moviesParams$ } from '../state/movies'
 
 const _spacing = 12
 
@@ -14,11 +15,11 @@ type Option = {
 function FilterItems({
   title,
   options,
-  onPress,
+  onSelect,
 }: {
   title: string
   options: Option[]
-  onPress: (value: string) => void
+  onSelect: (value: string) => void
 }) {
   const { width } = useWindowDimensions()
   return (
@@ -38,26 +39,29 @@ function FilterItems({
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(e) => {
+          const selected = Math.floor(
+            e.nativeEvent.contentOffset.x /
+              e.nativeEvent.layoutMeasurement.width,
+          )
+          onSelect(String(options[selected].id))
+        }}
       >
         {options.map((o) => {
           return (
-            <Pressable
+            <Text
               key={`option-${o.id}`}
-              onPress={() => onPress(String(o.id))}
+              style={{
+                fontSize: 24,
+                fontWeight: '700',
+                color: '#000',
+                marginVertical: 12,
+                width: width,
+                textAlign: 'center',
+              }}
             >
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: '700',
-                  color: '#000',
-                  marginVertical: 12,
-                  width: width,
-                  textAlign: 'center',
-                }}
-              >
-                {o.value}
-              </Text>
-            </Pressable>
+              {o.value}
+            </Text>
           )
         })}
       </ScrollView>
@@ -87,7 +91,11 @@ function MovieFilters() {
             id: 2023 - i,
             value: String(2023 - i),
           }))}
-          onPress={() => {}}
+          onSelect={(year) => {
+            moviesParams$.assign({
+              year: Number(year),
+            })
+          }}
         />
         <FilterItems
           title="Genre"
@@ -95,7 +103,11 @@ function MovieFilters() {
             id: Number(id),
             value: genre,
           }))}
-          onPress={() => {}}
+          onSelect={(genre) => {
+            moviesParams$.assign({
+              genre: genre,
+            })
+          }}
         />
       </View>
     </SafeAreaView>
