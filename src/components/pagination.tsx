@@ -5,7 +5,7 @@ import { pagination$ } from '../state/carousel'
 
 function Pagination() {
   const total = pagination$.total.get()
-  const current = pagination$.current.get()
+  const current = pagination$.current.get() + 1
 
   return (
     <View

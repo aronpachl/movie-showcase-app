@@ -1,6 +1,6 @@
 import { observable } from '@legendapp/state'
 
 export const pagination$ = observable({
-  current: 1,
+  current: 0,
   total: 0,
 })

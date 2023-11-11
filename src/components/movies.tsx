@@ -24,11 +24,10 @@ function Movies() {
         }}
         onMomentumScrollEnd={(e) => {
           pagination$.assign({
-            current:
-              Math.floor(
-                e.nativeEvent.contentOffset.x /
-                  e.nativeEvent.layoutMeasurement.width,
-              ) + 1,
+            current: Math.floor(
+              e.nativeEvent.contentOffset.x /
+                e.nativeEvent.layoutMeasurement.width,
+            ),
           })
         }}
       />
