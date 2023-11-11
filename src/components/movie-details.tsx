@@ -2,7 +2,7 @@ import { Entypo } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { GENRES } from '../constants/genres'
-import Movie from './movie'
+import { Movie } from '../types/movie'
 
 type Props = {
   item: Movie
@@ -17,13 +17,15 @@ function MovieDetails({ item }: Props) {
       style={{ maxWidth: '80%' }}
     >
       <Text style={style.text}>
-        {item.genre_ids.map((id) => GENRES[id]).join(', ')}
+        {item.genre_ids.map((id: number) => GENRES[id]).join(', ')}
       </Text>
       <Text style={style.title}>{item.title}</Text>
       <View
         style={{ flexDirection: 'row', columnGap: 4, alignItems: 'center' }}
       >
-        <Text style={style.text}>{item.release_date}</Text>
+        <Text style={style.text}>
+          {new Date(item.release_date).getFullYear()}
+        </Text>
         <Entypo name="dot-single" size={14} color="white" />
         <Text style={style.text}>1h 51m</Text>
         <Entypo name="dot-single" size={14} color="white" />

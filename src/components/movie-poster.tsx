@@ -7,7 +7,7 @@ type Props = {
   item: Movie
 }
 
-function Movie({ item }: Props) {
+function MoviePoster({ item }: Props) {
   const { width, height } = useWindowDimensions()
 
   return (
@@ -23,8 +23,11 @@ function Movie({ item }: Props) {
           uri: getImagePath(item.backdrop_path),
         }}
         contentFit="cover"
-        transition={1000}
-        style={StyleSheet.absoluteFillObject}
+        transition={400}
+        style={[
+          StyleSheet.absoluteFillObject,
+          { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+        ]}
       />
       <View
         style={[
@@ -38,4 +41,4 @@ function Movie({ item }: Props) {
   )
 }
 
-export default Movie
+export default MoviePoster

@@ -3,13 +3,13 @@ import { createQueryString } from '../utils/create-query-string'
 
 export const moviesParams$ = observable({
   year: 2023,
-  genre: 'action',
+  genre: '',
   page: 1,
   queryString: computed((): string => {
     const { year, genre, page } = moviesParams$.get()
     return createQueryString({
       year,
-      genre,
+      with_genres: genre,
       page,
     })
   }),
