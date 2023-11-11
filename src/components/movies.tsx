@@ -14,6 +14,7 @@ import Animated, {
 import { useMovies } from '../hooks/use-movies'
 import { pagination$ } from '../state/carousel'
 import { filterLayout$ } from '../state/filter-layout'
+import Loader from './loader'
 import MovieDetails from './movie-details'
 import MovieFilters from './movie-filters'
 import MoviePoster from './movie-poster'
@@ -22,9 +23,8 @@ import Pagination from './pagination'
 function Movies() {
   const flatListRef = useRef<FlatList>(null)
   const { height } = useWindowDimensions()
-  const { isLoading, data } = useMovies()
+  const { isLoading, data, isFetching } = useMovies()
   const current = pagination$.current.get()
-  const isFilterOpen = filterLayout$.isOpen.get()
   const filtersHeight = filterLayout$.height.get()
   const filterAnimation = useSharedValue(0)
   const movieListStyle = useAnimatedStyle(() => {
@@ -37,7 +37,7 @@ function Movies() {
       borderRadius: interpolate(
         filterAnimation.value,
         [0, filtersHeight],
-        [0, 32],
+        [0, 24],
       ),
     }
   })
@@ -68,11 +68,22 @@ function Movies() {
       filterAnimation.value = withTiming(0)
     })
 
+  const tap = Gesture.Tap().onStart(() => {
+    filterAnimation.value = withTiming(0)
+  })
+
   return (
     <View style={{ flex: 1 }}>
       <MovieFilters />
-      <GestureDetector gesture={Gesture.Race(flingUp, flingDown)}>
-        <Animated.View style={[movieListStyle, { overflow: 'hidden' }]}>
+      <GestureDetector
+        gesture={Gesture.Exclusive(flingDown, Gesture.Race(flingUp, tap))}
+      >
+        <Animated.View
+          style={[
+            movieListStyle,
+            { overflow: 'hidden', flex: 1, backgroundColor: '#000' },
+          ]}
+        >
           <FlatList
             ref={flatListRef}
             horizontal
@@ -107,6 +118,7 @@ function Movies() {
             <Pagination />
             <MovieDetails item={data[current]} />
           </View>
+          {isFetching && <Loader />}
         </Animated.View>
       </GestureDetector>
     </View>
